@@ -28,7 +28,7 @@ void count(void);
 "int"                   { count(); return T_INT; }
 "return"		        { count(); return KW_RETURN; }
 [a-zA-Z_][a-zA-Z0-9_]*  { count(); yylval.str_val = strdup(yytext); return IDENTIFIER; }
-.                       { printf("Unexpected character: %s at line %i column %i\n", yytext, row + 1, column + 1); exit(-1); }
+.                       { fprintf(stderr, "Unexpected character: \'%s\' at line %i column %i\n", yytext, row + 1, column + 1); exit(-1); }
 
 %%
 
