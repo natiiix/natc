@@ -2,9 +2,6 @@
 
 %{
 
-#include <stdio.h>
-#include <string.h>
-
 #define YY_DECL int yylex()
 
 #include "natc.tab.h"
