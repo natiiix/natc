@@ -1,2 +1,1 @@
-# natc
-Nat C
+# Nat C (Natiiix's C)
