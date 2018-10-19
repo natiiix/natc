@@ -32,9 +32,9 @@ const char* strformat(const char* const format, ...);
 %token L_ROUND R_ROUND L_CURLY R_CURLY
 %token T_INT
 %token KW_RETURN
-%token SEMICOLON
+%token SEMICOLON COMMA
 
-%type<str_val> func_def id_def type params_def statement_block statements atomic_statement expression
+%type<str_val> func_def id_def type params_def params_def_inner statement_block statements atomic_statement expression
 
 %start src_code
 
@@ -57,7 +57,13 @@ type
     ;
 
 params_def
-    : L_ROUND R_ROUND { $$ = strdup("()"); }
+    : L_ROUND R_ROUND { $$ = strdup("(void)"); }
+    | L_ROUND params_def_inner R_ROUND { $$ = strformat("(%s)", $2); }
+    ;
+
+params_def_inner
+    : id_def { $$ = $1; }
+    | id_def COMMA params_def_inner { $$ = strformat("%s,%s", $1, $3); }
     ;
 
 statement_block
