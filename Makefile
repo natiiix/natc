@@ -1,14 +1,24 @@
 PROJECT_NAME=natc
+SRC_DIR=src/
+BIN_DIR=bin/
+TMP_DIR=tmp/
+TEST_DATA_DIR=test_data/
+TEST_NAME=simple
 
-bin/$(PROJECT_NAME): tmp/$(PROJECT_NAME).tab.c tmp/$(PROJECT_NAME).tab.h tmp/lex.yy.c
-	gcc -o bin/$(PROJECT_NAME) tmp/$(PROJECT_NAME).tab.c tmp/lex.yy.c
+${BIN_DIR}$(PROJECT_NAME): ${TMP_DIR}$(PROJECT_NAME).tab.c ${TMP_DIR}$(PROJECT_NAME).tab.h ${TMP_DIR}lex.yy.c
+	gcc -Wall -Wextra -g -o ${BIN_DIR}$(PROJECT_NAME) ${TMP_DIR}$(PROJECT_NAME).tab.c ${TMP_DIR}lex.yy.c
 
-tmp/$(PROJECT_NAME).tab.c: src/$(PROJECT_NAME).y
-	yacc -Wall -o tmp/$(PROJECT_NAME).tab.c src/$(PROJECT_NAME).y
+${TMP_DIR}$(PROJECT_NAME).tab.c: ${SRC_DIR}$(PROJECT_NAME).y
+	yacc -Wall -o ${TMP_DIR}$(PROJECT_NAME).tab.c ${SRC_DIR}$(PROJECT_NAME).y
 
-tmp/lex.yy.c: src/$(PROJECT_NAME).l
-	lex -o tmp/lex.yy.c src/$(PROJECT_NAME).l
+${TMP_DIR}lex.yy.c: ${SRC_DIR}$(PROJECT_NAME).l
+	lex -o ${TMP_DIR}lex.yy.c src/$(PROJECT_NAME).l
 
 clean:
-	rm tmp/*
-	rm bin/*
+	rm ${TMP_DIR}*
+	rm ${BIN_DIR}*
+
+test: ${BIN_DIR}$(PROJECT_NAME) ${TEST_DATA_DIR}${TEST_NAME}.c
+	${BIN_DIR}${PROJECT_NAME} < ${TEST_DATA_DIR}${TEST_NAME}.c 1> ${TMP_DIR}${TEST_NAME}.c
+	gcc -Wall -Wextra -o ${TMP_DIR}${TEST_NAME} ${TMP_DIR}${TEST_NAME}.c
+	@echo OK
