@@ -37,7 +37,7 @@ const char* strformat(const char* const format, ...);
 %token PLUS MINUS ASTERISK SLASH MODULO
 %token SEMICOLON COMMA
 
-%type<str_val> code_parts top_level_statement include func_def id_def type params_def params_def_inner statement_block statements atomic_statement expression
+%type<str_val> code_parts top_level_statement include func_def id_def type func_def_params func_def_params_inner statement_block statements atomic_statement func_call func_call_args func_call_args_inner expression
 
 %start full_source_code
 
@@ -62,7 +62,7 @@ include
     | HASH_INCLUDE INCLUDE_NAME { $$ = strformat("#include %s\n", $2); }
 
 func_def
-    : id_def params_def statement_block { $$ = strformat("%s%s%s\n", $1, $2, $3); }
+    : id_def func_def_params statement_block { $$ = strformat("%s%s%s\n", $1, $2, $3); }
     ;
 
 id_def
@@ -73,14 +73,14 @@ type
     : T_INT { $$ = strdup("int"); }
     ;
 
-params_def
+func_def_params
     : L_ROUND R_ROUND { $$ = strdup("(void)"); }
-    | L_ROUND params_def_inner R_ROUND { $$ = strformat("(%s)", $2); }
+    | L_ROUND func_def_params_inner R_ROUND { $$ = strformat("(%s)", $2); }
     ;
 
-params_def_inner
+func_def_params_inner
     : id_def { $$ = $1; }
-    | id_def COMMA params_def_inner { $$ = strformat("%s,%s", $1, $3); }
+    | id_def COMMA func_def_params_inner { $$ = strformat("%s,%s", $1, $3); }
     ;
 
 statement_block
@@ -95,10 +95,26 @@ statements
 atomic_statement
     : KW_RETURN SEMICOLON { $$ = strdup("return;"); }
     | KW_RETURN expression SEMICOLON { $$ = strformat("return %s;", $2); }
+    | func_call { $$ = $1; }
+    ;
+
+func_call
+    : IDENTIFIER func_call_args SEMICOLON { $$ = strformat("%s%s;", $1, $2); }
+    ;
+
+func_call_args
+    : L_ROUND R_ROUND { $$ = strdup("()"); }
+    | L_ROUND func_call_args_inner R_ROUND { $$ = strformat("(%s)", $2); }
+    ;
+
+func_call_args_inner
+    : expression { $$ = $1; }
+    | expression COMMA func_call_args_inner { $$ = strformat("%s,%s", $1, $3); }
     ;
 
 expression
     : LIT_INT { $$ = strformat("%d", $1); }
+    | LIT_STRING { $$ = $1; }
     ;
 
 %%
