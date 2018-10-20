@@ -8,7 +8,7 @@ ${BIN_DIR}$(PROJECT_NAME): ${TMP_DIR}$(PROJECT_NAME).tab.c ${TMP_DIR}$(PROJECT_N
 	gcc -Wall -Wextra -g -o ${BIN_DIR}$(PROJECT_NAME) ${TMP_DIR}$(PROJECT_NAME).tab.c ${TMP_DIR}lex.yy.c
 
 ${TMP_DIR}$(PROJECT_NAME).tab.c: ${SRC_DIR}$(PROJECT_NAME).y
-	yacc -Wall -o ${TMP_DIR}$(PROJECT_NAME).tab.c ${SRC_DIR}$(PROJECT_NAME).y
+	yacc -Wall -v -o ${TMP_DIR}$(PROJECT_NAME).tab.c ${SRC_DIR}$(PROJECT_NAME).y
 
 ${TMP_DIR}lex.yy.c: ${SRC_DIR}$(PROJECT_NAME).l
 	lex -o ${TMP_DIR}lex.yy.c src/$(PROJECT_NAME).l
