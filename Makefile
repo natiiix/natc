@@ -17,11 +17,13 @@ clean:
 	rm ${TMP_DIR}*
 	rm ${BIN_DIR}*
 
-test: ${BIN_DIR}$(PROJECT_NAME) ${TEST_DATA_DIR}simple.c
+test: ${BIN_DIR}$(PROJECT_NAME) ${TEST_DATA_DIR}simple.c ${TEST_DATA_DIR}hello.c
 	$(call run_test,simple)
+	$(call run_test,hello)
+	@ echo \\n\>\>\> All tests passed! \<\<\<
 
 define run_test =
-	${BIN_DIR}${PROJECT_NAME} < ${TEST_DATA_DIR}${1}.c 1> ${TMP_DIR}${1}.c
-	gcc -Wall -Wextra -o ${TMP_DIR}${1} ${TMP_DIR}${1}.c
-	@echo +++ Test \"${1}\": OK +++
+	@ ${BIN_DIR}${PROJECT_NAME} < ${TEST_DATA_DIR}${1}.c 1> ${TMP_DIR}${1}.c
+	@ gcc -Wall -Wextra -o ${TMP_DIR}${1} ${TMP_DIR}${1}.c
+	@ echo +++ Test \"${1}\": OK +++
 endef
