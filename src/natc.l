@@ -35,6 +35,7 @@ void count(void);
 ";"                     { count(); return SEMICOLON; }
 ","                     { count(); return COMMA; }
 "int"                   { count(); return T_INT; }
+"char"                  { count(); return T_CHAR; }
 "return"		        { count(); return KW_RETURN; }
 "#include"              { count(); return HASH_INCLUDE; }
 [a-zA-Z_][a-zA-Z0-9_]*  { count(); yylval.str_val = strdup(yytext); return IDENTIFIER; }

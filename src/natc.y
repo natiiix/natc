@@ -31,7 +31,7 @@ const char* strformat(const char* const format, ...);
 %token<str_val> INCLUDE_NAME
 
 %token L_ROUND R_ROUND L_CURLY R_CURLY L_SQUARE R_SQUARE L_ANGLE R_ANGLE
-%token T_INT
+%token T_INT T_CHAR
 %token KW_RETURN
 %token HASH_INCLUDE
 %token PLUS MINUS ASTERISK SLASH MODULO
@@ -71,6 +71,8 @@ id_def
 
 type
     : T_INT { $$ = strdup("int"); }
+    | T_CHAR { $$ = strdup("char"); }
+    | type ASTERISK { $$ = strformat("%s*", $1); }
     ;
 
 func_def_params
@@ -115,6 +117,8 @@ func_call_args_inner
 expression
     : LIT_INT { $$ = strformat("%d", $1); }
     | LIT_STRING { $$ = $1; }
+    | IDENTIFIER { $$ = $1; }
+    | expression L_SQUARE expression R_SQUARE { $$ = strformat("%s[%s]", $1, $3); }
     ;
 
 %%
