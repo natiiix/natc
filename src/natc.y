@@ -131,7 +131,7 @@ void yyparse_loop(void)
 	while(!feof(yyin));
 }
 
-int main(const int argc, const char** const argv)
+int main(const int argc, const char* const* const argv)
 {
     if (argc == 1)
     {
