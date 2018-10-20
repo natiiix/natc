@@ -35,10 +35,12 @@ const char* strformat(const char* const format, ...);
 %token KW_RETURN
 %token HASH_INCLUDE
 %token PLUS MINUS ASTERISK SLASH MODULO
+%token ASSIGN
 %token SEMICOLON COMMA
 
-%type<str_val> code_parts top_level_statement include func_def id_def type func_def_params func_def_params_inner statement_block statements atomic_statement func_call func_call_args func_call_args_inner expression atomic_expr
+%type<str_val> code_parts top_level_statement include func_def id_def var_def type func_def_params func_def_params_inner statement_block statements atomic_statement func_call func_call_args func_call_args_inner expression atomic_expr
 
+%right ASSIGN
 %left PLUS MINUS
 %left ASTERISK SLASH MODULO
 %precedence L_SQUARE
@@ -59,6 +61,7 @@ code_parts
 top_level_statement
     : func_def { $$ = $1; }
     | include { $$ = $1; }
+    | var_def { $$ = $1; }
     ;
 
 include
@@ -71,6 +74,11 @@ func_def
 
 id_def
     : type IDENTIFIER { $$ = strformat("%s %s", $1, $2); }
+    ;
+
+var_def
+    : id_def SEMICOLON { $$ = strformat("%s;", $1); }
+    | id_def ASSIGN expression SEMICOLON { $$ = strformat("%s=%s;", $1, $3); }
     ;
 
 type
@@ -102,6 +110,8 @@ atomic_statement
     : KW_RETURN SEMICOLON { $$ = strdup("return;"); }
     | KW_RETURN expression SEMICOLON { $$ = strformat("return %s;", $2); }
     | func_call { $$ = $1; }
+    | var_def { $$ = $1; }
+    | IDENTIFIER ASSIGN expression SEMICOLON { $$ = strformat("%s=%s;", $1, $3); }
     ;
 
 func_call
@@ -126,6 +136,7 @@ expression
     | expression ASTERISK expression { $$ = strformat("%s*%s", $1, $3); }
     | expression SLASH expression { $$ = strformat("%s/%s", $1, $3); }
     | expression MODULO expression { $$ = strformat("%s%%%s", $1, $3); }
+    | expression ASSIGN expression { $$ = strformat("%s=%s", $1, $3); }
     ;
 
 atomic_expr
@@ -133,6 +144,7 @@ atomic_expr
     | LIT_STRING { $$ = $1; }
     | IDENTIFIER { $$ = $1; }
     | expression L_SQUARE expression R_SQUARE { $$ = strformat("%s[%s]", $1, $3); }
+    | func_call { $$ = $1; }
     ;
 
 %%

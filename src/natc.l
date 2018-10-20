@@ -32,6 +32,7 @@ void count(void);
 "*"                     { count(); return ASTERISK; }
 "/"                     { count(); return SLASH; }
 "%"                     { count(); return MODULO; }
+"="                     { count(); return ASSIGN; }
 ";"                     { count(); return SEMICOLON; }
 ","                     { count(); return COMMA; }
 "int"                   { count(); return T_INT; }
