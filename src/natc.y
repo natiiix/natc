@@ -163,7 +163,7 @@ const char* strformat(const char* const format, ...)
     va_list args;
     va_start(args, format);
 
-    const int len = vsnprintf(malloc(10000), 10000, format, args);
+    const int len = vsnprintf(NULL, 0, format, args);
     char* const str = (char*)malloc(len + 1);
 
     if (str == NULL)
