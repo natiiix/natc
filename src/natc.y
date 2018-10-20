@@ -122,15 +122,32 @@ expression
 extern int row;
 extern int column;
 
+void yyparse_loop(void)
+{
+	do
+	{
+		yyparse();
+	}
+	while(!feof(yyin));
+}
+
 int main(const int argc, const char** const argv)
 {
-    yyin = stdin;
-
-    do
+    if (argc == 1)
     {
-        yyparse();
+        // printf("STDIN\n");
+	    yyin = stdin;
+        yyparse_loop();
     }
-    while(!feof(yyin));
+    else
+    {
+        for (int i = 1; i < argc; i++)
+        {
+            // printf("FILE: %s\n", argv[i]);
+            yyin = fopen(argv[i], "r");
+            yyparse_loop();
+        }
+    }
 
 	return 0;
 }
