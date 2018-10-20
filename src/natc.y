@@ -37,7 +37,10 @@ const char* strformat(const char* const format, ...);
 %token PLUS MINUS ASTERISK SLASH MODULO
 %token SEMICOLON COMMA
 
-%type<str_val> code_parts top_level_statement include func_def id_def type func_def_params func_def_params_inner statement_block statements atomic_statement func_call func_call_args func_call_args_inner expression
+%type<str_val> code_parts top_level_statement include func_def id_def type func_def_params func_def_params_inner statement_block statements atomic_statement func_call func_call_args func_call_args_inner expression atomic_expr
+
+%left PLUS MINUS
+%left ASTERISK SLASH MODULO
 
 %start full_source_code
 
@@ -115,6 +118,16 @@ func_call_args_inner
     ;
 
 expression
+    : atomic_expr { $$ = $1; }
+    | MINUS expression { $$ = strformat("-%s", $2); }
+    | expression PLUS expression { $$ = strformat("%s+%s", $1, $3); }
+    | expression MINUS expression { $$ = strformat("%s-%s", $1, $3); }
+    | expression ASTERISK expression { $$ = strformat("%s*%s", $1, $3); }
+    | expression SLASH expression { $$ = strformat("%s/%s", $1, $3); }
+    | expression MODULO expression { $$ = strformat("%s%%%s", $1, $3); }
+    ;
+
+atomic_expr
     : LIT_INT { $$ = strformat("%d", $1); }
     | LIT_STRING { $$ = $1; }
     | IDENTIFIER { $$ = $1; }
