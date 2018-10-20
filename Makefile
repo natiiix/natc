@@ -17,7 +17,7 @@ clean:
 	rm ${TMP_DIR}*
 	rm ${BIN_DIR}*
 
-test: ${BIN_DIR}$(PROJECT_NAME) ${TEST_DATA_DIR}simple.c ${TEST_DATA_DIR}hello.c
+test: ${BIN_DIR}$(PROJECT_NAME) ${TEST_DATA_DIR}simple.c ${TEST_DATA_DIR}hello.c ${TEST_DATA_DIR}args.c
 	$(call run_test,simple)
 	$(call run_test,hello)
 	$(call run_test,args)
