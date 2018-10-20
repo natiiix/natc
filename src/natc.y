@@ -29,9 +29,11 @@ const char* strformat(const char* const format, ...);
 %token<str_val> LIT_STRING
 %token<str_val> IDENTIFIER
 
-%token L_ROUND R_ROUND L_CURLY R_CURLY
+%token L_ROUND R_ROUND L_CURLY R_CURLY L_SQUARE R_SQUARE L_ANGLE R_ANGLE
 %token T_INT
 %token KW_RETURN
+%token HASH_INCLUDE
+%token PLUS MINUS ASTERISK SLASH MODULO
 %token SEMICOLON COMMA
 
 %type<str_val> func_def id_def type params_def params_def_inner statement_block statements atomic_statement expression
