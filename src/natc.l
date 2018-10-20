@@ -18,6 +18,7 @@ void count(void);
 [ \t\r\n]	            { count(); }
 [0-9]+		            { count(); yylval.int_val = atoi(yytext); return LIT_INT; }
 \"(\\.|[^"\\])*\"       { count(); yylval.str_val = strdup(yytext); return LIT_STRING; }
+\<[a-zA-Z0-9_\.]+\>     { count(); yylval.str_val = strdup(yytext); return INCLUDE_NAME; }
 "("		                { count(); return L_ROUND; }
 ")"		                { count(); return R_ROUND; }
 "{"		                { count(); return L_CURLY; }

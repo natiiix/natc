@@ -28,6 +28,7 @@ const char* strformat(const char* const format, ...);
 %token<int_val> LIT_INT
 %token<str_val> LIT_STRING
 %token<str_val> IDENTIFIER
+%token<str_val> INCLUDE_NAME
 
 %token L_ROUND R_ROUND L_CURLY R_CURLY L_SQUARE R_SQUARE L_ANGLE R_ANGLE
 %token T_INT
@@ -36,18 +37,32 @@ const char* strformat(const char* const format, ...);
 %token PLUS MINUS ASTERISK SLASH MODULO
 %token SEMICOLON COMMA
 
-%type<str_val> func_def id_def type params_def params_def_inner statement_block statements atomic_statement expression
+%type<str_val> code_parts top_level_statement include func_def id_def type params_def params_def_inner statement_block statements atomic_statement expression
 
-%start src_code
+%start full_source_code
 
 %%
 
-src_code
-    : func_def { printf("%s\n", $1); }
+full_source_code
+    : code_parts { printf("%s", $1); }
     ;
 
+code_parts
+    : top_level_statement { $$ = $1; }
+    | top_level_statement code_parts { $$ = strformat("%s%s", $1, $2); }
+    ;
+
+top_level_statement
+    : func_def { $$ = $1; }
+    | include { $$ = $1; }
+    ;
+
+include
+    : HASH_INCLUDE LIT_STRING { $$ = strformat("#include %s\n", $2); }
+    | HASH_INCLUDE INCLUDE_NAME { $$ = strformat("#include %s\n", $2); }
+
 func_def
-    : id_def params_def statement_block { $$ = strformat("%s%s%s", $1, $2, $3); }
+    : id_def params_def statement_block { $$ = strformat("%s%s%s\n", $1, $2, $3); }
     ;
 
 id_def
