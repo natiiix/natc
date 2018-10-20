@@ -41,6 +41,7 @@ const char* strformat(const char* const format, ...);
 
 %left PLUS MINUS
 %left ASTERISK SLASH MODULO
+%precedence L_SQUARE
 
 %start full_source_code
 
